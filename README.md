@@ -1,84 +1,80 @@
 # debian-dev-setup
 
-A two-phase bootstrap + development setup for Debian-based Linux systems.
+This repo provides a clean, two-phase bootstrap + development setup process for Debian-based Linux systems.
 
-This tool helps you quickly set up:
+It helps you:
 
-- ✅ A clean system with optional updates and user account creation
-- ✅ A development environment with:
-  - [Visual Studio Code](https://code.visualstudio.com/)
-  - [Git](https://git-scm.com/)
-  - [Node.js & npm](https://nodejs.org/)
+* ✅ Set up a fresh system (with optional user creation and sudo)
+* ✅ Install key development tools:
+
+  * [Visual Studio Code](https://code.visualstudio.com/)
+  * [Git](https://git-scm.com/)
+  * [Node.js & npm](https://nodejs.org/)
 
 Perfect for Ubuntu, Kali, Linux Mint, Pop!_OS, and other Debian-derived systems.
 
 ---
 
-## 🛠️ Setup Scripts
+## 🚀 Quick Start
 
-### 1. `bootstrap-system.sh`
+### 📌 Option A: Full Setup (Recommended for Fresh Installs)
 
-Prepares your system by optionally:
-
-- Running `apt update && upgrade`
-- Creating a new user account
-- Granting `sudo` access to that user
-- Automatically downloading and running the main setup script under that user
-
-### 2. `setup-vscode-git.sh`
-
-Handles the development setup:
-
-- Installs Git (if missing)
-- Installs Node.js and npm (if missing)
-- Installs Visual Studio Code from official `.deb`
-- Configures Git with your name and email
-- Cleans up after install
-
----
-
-## 🚀 How to Use
-
-### Option A: Full Setup (recommended for fresh installs)
-
-Run the bootstrap script as `root` or with `sudo`:
+Run this **as root** or with `sudo` to prepare your system and optionally create a new user:
 
 ```bash
 sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/bootstrap-system.sh)"
 ```
 
-> This will guide you through system update, user creation, and then automatically switch and run the main setup script under the new user.
+You will be guided through:
 
----
+* Running `apt update && upgrade`
+* Creating a new user (optional)
+* Adding that user to the `sudo` group (optional)
 
-### Option B: Just Install Dev Tools (for existing user accounts)
-
-If your system is already set up, you can run just the development setup:
+If you create a new user, you’ll be shown instructions like:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/debian-dev-setup.sh)
+su - yourusername
+bash <(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/setup-vscode-git.sh)
 ```
 
 ---
 
-## 🔐 Requirements
+### ⚙️ Option B: Just Install Dev Tools (For Existing User Accounts)
 
-- Debian-based OS
-- Internet access
-- `sudo` privileges for user setup or package installation
+If your system is already set up and you're ready to install VS Code, Git, and Node.js, run:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/setup-vscode-git.sh)
+```
+
+This script will:
+
+* Install VS Code from Microsoft’s official `.deb` package
+* Install Git (if not already installed)
+* Install Node.js & npm (if not already installed)
+* Prompt you for your Git username and email
 
 ---
 
 ## 📁 File Overview
 
-| File                  | Purpose                                |
-|-----------------------|----------------------------------------|
-| `bootstrap-system.sh` | Prepares system and user environment   |
-| `setup-vscode-git.sh` | Installs VS Code, Git, Node.js         |
+| File                  | Description                                        |
+| --------------------- | -------------------------------------------------- |
+| `bootstrap-system.sh` | Prepares system and optionally creates a new user  |
+| `setup-vscode-git.sh` | Installs VS Code, Git, Node.js, and configures Git |
+
+---
+
+## 🔐 Requirements
+
+* A Debian-based OS (Ubuntu, Kali, Linux Mint, etc.)
+* Internet access
+* `sudo` privileges (for setup or user creation)
 
 ---
 
 ## 🙋 Author
 
-Created by [Siavash Ashkiani](https://github.com/ashkiani)  
-Feel free to open issues or PRs if you'd like to improve it!
+Created by [Siavash Ashkiani](https://github.com/ashkiani)
+Pull requests and suggestions welcome!
