@@ -10,7 +10,7 @@
 set -e
 
 if [[ "$EUID" -ne 0 ]]; then
-  echo "❌ This script must be run as root (e.g., with sudo)."
+  echo " This script must be run as root (e.g., with sudo)."
   exit 1
 fi
 
@@ -24,7 +24,7 @@ echo
 read -p "Would you like to update and upgrade the system first? [y/N]: " do_update
 if [[ "$do_update" =~ ^[Yy]$ ]]; then
   apt-get update && apt-get upgrade -y
-  echo "✅ System update and upgrade complete."
+  echo "System update and upgrade complete."
 fi
 
 echo
@@ -33,14 +33,14 @@ if [[ "$create_user" =~ ^[Yy]$ ]]; then
   read -p "Enter new username: " NEW_USER
 
   if id "$NEW_USER" &>/dev/null; then
-    echo "⚠️ User '$NEW_USER' already exists. Skipping creation."
+    echo "User '$NEW_USER' already exists. Skipping creation."
   else
     adduser "$NEW_USER"
 
     read -p "Do you want to give '$NEW_USER' sudo privileges? [y/N]: " add_sudo
     if [[ "$add_sudo" =~ ^[Yy]$ ]]; then
       usermod -aG sudo "$NEW_USER"
-      echo "✅ '$NEW_USER' added to sudo group."
+      echo "'$NEW_USER' added to sudo group."
     fi
   fi
 
@@ -63,7 +63,7 @@ if [[ "$run_here" =~ ^[Yy]$ ]]; then
   curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/setup-vscode-git.sh | bash
 else
   echo
-  echo "📝 You can manually run the setup later with:"
+  echo " You can manually run the setup later with:"
   echo "    bash <(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/setup-vscode-git.sh)"
   echo
 fi
