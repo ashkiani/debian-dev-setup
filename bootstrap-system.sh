@@ -2,7 +2,7 @@
 #==================================================
 # Script Name: bootstrap-system.sh
 # Description: Prepares system (update, user creation),
-#              then auto-runs setup-vscode-git.sh
+#              then auto-runs debian-dev-setup.sh
 # Author: Siavash Ashkiani
 # Date: 2025-05-15
 #==================================================
@@ -47,11 +47,11 @@ if [[ "$create_user" =~ ^[Yy]$ ]]; then
   echo
   read -p "Do you want to switch to '$NEW_USER' and begin dev setup now? [y/N]: " switch_now
   if [[ "$switch_now" =~ ^[Yy]$ ]]; then
-    echo "Downloading setup-vscode-git.sh and switching..."
-    curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/setup-vscode-git.sh -o /home/"$NEW_USER"/setup-vscode-git.sh
-    chown "$NEW_USER":"$NEW_USER" /home/"$NEW_USER"/setup-vscode-git.sh
-    chmod +x /home/"$NEW_USER"/setup-vscode-git.sh
-    su - "$NEW_USER" -c "bash ~/setup-vscode-git.sh"
+    echo "Downloading debian-dev-setup.sh and switching..."
+    curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/debian-dev-setup.sh -o /home/"$NEW_USER"/debian-dev-setup.sh
+    chown "$NEW_USER":"$NEW_USER" /home/"$NEW_USER"/debian-dev-setup.sh
+    chmod +x /home/"$NEW_USER"/debian-dev-setup.sh
+    su - "$NEW_USER" -c "bash ~/debian-dev-setup.sh"
     exit 0
   fi
 fi
@@ -60,10 +60,10 @@ fi
 echo
 read -p "Would you like to run the dev setup now (VS Code, Git, Node.js)? [y/N]: " run_here
 if [[ "$run_here" =~ ^[Yy]$ ]]; then
-  curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/setup-vscode-git.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/debian-dev-setup.sh | bash
 else
   echo
   echo " You can manually run the setup later with:"
-  echo "    bash <(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/setup-vscode-git.sh)"
+  echo "    bash <(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/debian-dev-setup.sh)"
   echo
 fi

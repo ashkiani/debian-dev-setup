@@ -44,7 +44,7 @@ Handles the development setup:
 Run the bootstrap script as `root` or with `sudo`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/bootstrap-system.sh | sudo bash
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/bootstrap-system.sh)"
 ```
 
 > This will guide you through system update, user creation, and then automatically switch and run the main setup script under the new user.
@@ -56,7 +56,7 @@ curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/boot
 If your system is already set up, you can run just the development setup:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/setup-vscode-git.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/debian-dev-setup.sh)
 ```
 
 ---
