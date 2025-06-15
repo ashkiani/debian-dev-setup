@@ -35,7 +35,7 @@ If you create a new user, you’ll be shown instructions like:
 
 ```bash
 su - yourusername
-bash <(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/setup-vscode-git.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/debian-dev-setup.sh)
 ```
 
 ---
@@ -45,7 +45,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/ma
 If your system is already set up and you're ready to install VS Code, Git, and Node.js, run:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/setup-vscode-git.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/debian-dev-setup.sh)
 ```
 
 This script will:
