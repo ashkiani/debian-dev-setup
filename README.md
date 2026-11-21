@@ -1,6 +1,6 @@
 # debian-dev-setup
 
-Interactive setup scripts for Debian-derived virtual machines.
+Interactive setup and hardening scripts for Debian-derived systems and virtual machines.
 
 The repository includes a resumable workflow for full VM setup, plus the original lightweight bootstrap and developer-tool scripts.
 
@@ -9,6 +9,8 @@ The repository includes a resumable workflow for full VM setup, plus the origina
 | File | Purpose |
 |---|---|
 | `vm-setup-v2.sh` | Full VM setup with hostname, account, SSH, service, package, and optional security configuration |
+| `ai-sandbox-setup.sh` | Prepare and run a restricted AI-agent environment in a disposable VM |
+| `pi-hardening.sh` | Guided Raspberry Pi and optional general server hardening |
 | `bootstrap-system.sh` | Original online system bootstrap and optional user creation |
 | `debian-dev-setup.sh` | Original online installer for VS Code, Git, Node.js, and npm |
 
@@ -73,6 +75,116 @@ chmod +x ~/vm-setup-v2.sh
 ```
 
 The continuation phase assists with reconnecting networking before any package operation is performed.
+
+## Optional follow-up scripts
+
+Run these **after** the base setup on a suitable machine. Each is a complete,
+standalone file. Both scripts ask for approval before changing the system and use sudo only when needed.
+
+### Disposable AI-agent VM
+
+Use a fresh VM or snapshot, not your daily workstation. Complete the base setup,
+then disable hypervisor shared folders, clipboard, drag/drop, USB passthrough
+and access to the host/LAN. NAT by itself is not sufficient. Use a bounded virtual
+disk and host-enforced isolation. For an offline guest, disconnect its adapter.
+
+```bash
+curl -fsSLo ~/ai-sandbox-setup.sh \
+  https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/ai-sandbox-setup.sh
+chmod +x ~/ai-sandbox-setup.sh
+~/ai-sandbox-setup.sh start
+```
+
+The guided setup lets you choose:
+
+- Offline (default) or public IPv4 TCP/443 plus DNS to a chosen public resolver.
+  HTTPS mode requires nftables and permits arbitrary public IPv4 TCP/443, **not**
+  only approved domains or verified TLS. DNS is ordinary port 53, not encrypted.
+- Session time, memory, CPU and process limits (defaults: 120 minutes, 4096 MiB,
+  200% CPU, 256 tasks). These are session limits, not a disk quota or VM lifetime.
+- Whether to relax namespace/mount restrictions for the agent's own sandbox.
+  Some agent versions need this; never disable agent-native protection merely to
+  make a test pass.
+- In HTTPS mode, optional Codex and Claude Code installation via npm, executed
+  as the restricted account. Choose a reviewed exact version where possible.
+  The distro Node/npm versions must satisfy the selected CLI's requirements.
+
+The dedicated `dds-ai-agent` account is locked, has no login shell or sudo, and
+runs under a transient systemd service with a private writable workspace,
+read-only system directories, hidden home directories, restricted devices and
+capabilities, and a bounded lifetime. Network policy is applied before launch.
+The script performs an active local verification before optional agent installation.
+Use a supported Debian-derived VM with systemd 248 or newer (e.g. Debian 12+).
+
+Once configured, run the **same file** to start a shell, Codex or Claude Code:
+
+```bash
+~/ai-sandbox-setup.sh run
+```
+
+Other optional commands: `verify` (when idle), `stop` (ends the session process
+group), `install codex`, `install claude`, `start --dry-run`, and `--help`.
+`start` can be rerun to change settings when no agent processes are running.
+
+The workspace is `/var/lib/debian-dev-setup/ai-sandbox/workspace`. Put only
+reviewed project files and narrowly scoped credentials there. Use the agent's
+supported device-code/manual authentication if available; loopback connections
+are intentionally blocked in HTTPS mode. No administrator environment or tokens
+are passed to the agent. Do not assume credentials or files in the workspace
+are protected from the agent itself. Work and login state persist between
+sessions until the VM is reverted/destroyed. Export reviewed results and revoke
+credentials before deleting the VM. The script never destroys the VM itself.
+
+This is defense in depth, not a guarantee of containment: the guest kernel,
+other local services, abstract Unix sockets in online mode, public-addressed
+host/LAN services and external firewall changes remain relevant. Do not use an
+actively hostile or sensitive workload without separate host-level restrictions.
+Do not flush/reload firewall rules or change policy during an agent session.
+
+### Raspberry Pi or general Debian server
+
+Run on Raspberry Pi OS (prefer current Lite ARM64), or add `--server` to use the
+same script on a Debian-derived system without Pi-specific hardware steps.
+
+```bash
+curl -fsSLo ~/pi-hardening.sh \
+  https://raw.githubusercontent.com/ashkiani/debian-dev-setup/main/pi-hardening.sh
+chmod +x ~/pi-hardening.sh
+~/pi-hardening.sh start
+```
+
+The wizard inventories running services and listening ports, then offers capped
+persistent or volatile logging, unattended package updates, SSH hardening,
+UFW firewall with user-selected TCP/UDP ports, hardware watchdog and Bluetooth
+service management. All changes are opt-in. SSH settings are validated and
+rolled back on failed validation/reload. Use a local console for SSH/firewall
+changes (the script skips these when it detects SSH). Retest key login before
+leaving the console. Unattended updates depend on your distribution's configured
+origins; check them, and review the effective firewall and log settings. No
+automatic reboot is initiated. For a report run `~/pi-hardening.sh verify`
+(add `--server` on non-Pi systems).
+
+Recovery: keep a backup of the SD card or VM. At a local console, `sudo ufw disable`
+disables UFW (including pre-existing rules). Restore/remove only the script's
+named drop-ins and reload the relevant service; use the backup for complete
+reversal. `--help` lists the commands and precautions.
+
+### Offline and preview operation
+
+Copy either **complete** script from another machine or paste it with `cat >
+~/ai-sandbox-setup.sh` (or `~/pi-hardening.sh`), followed by Ctrl+D. Run `chmod +x`
+on the copied script and then run `start --offline`. The AI script needs no
+package downloads for offline session isolation; the Pi script skips optional
+steps whose packages are absent. Existing APT timers, if enabled, are not
+stopped by Pi offline setup; it may enable timers for a future boot only with
+approval. Disconnect networking at the hypervisor or physically when strict
+machine-wide offline operation is needed.
+
+Both scripts support `start --dry-run` for a non-mutating preview. In a terminal
+it asks the same optional questions; without one it uses safe preview defaults.
+The original v2 script and legacy entry points are unchanged. Live integration
+checks on a disposable VM and a Pi are required before relying on the new controls;
+see [TESTING.md](TESTING.md).
 
 ## Setup sequence
 

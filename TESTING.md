@@ -65,3 +65,36 @@ Test the following scenarios on each supported distribution and desktop environm
 16. Run `start`, `continue`, and optional commands a second time to check repeatability.
 
 Restore the VM snapshot between scenarios that modify accounts, networking, firewall rules, or package state.
+
+## Standalone follow-up scripts
+
+`tests/test-follow-ups.sh` tests copied standalone scripts, argument validation,
+network rule generation, session arguments, and non-mutating dry-run paths.
+These checks do not execute root, package or systemd mutations.
+
+Live integration checklist (not covered by automated tests):
+
+1. Use a separate Debian 12+ VM snapshot. Disable host integration, block host/LAN
+   access at the hypervisor, and set a virtual disk cap. Complete base setup.
+2. Copy only `ai-sandbox-setup.sh` into the offline VM. Run `start --offline`,
+   decline optional nesting, then run `verify` and `run`. Confirm user/group,
+   capabilities, read-only system mounts, inaccessible administrator home,
+   no external interfaces, and writable workspace. Confirm `sudo` is denied.
+3. Set a short session lifetime; confirm the session and its descendants stop at
+   expiration and after `stop`. Verify memory, CPU and task limits with
+   `systemctl show dds-ai-session.service` from the administrator console.
+4. In another disposable VM choose HTTPS. Verify nftables output rules and test
+   the resolver, public port 443, prohibited ports, loopback, IPv6 and a controlled
+   private-network destination. Verify host/LAN blocking separately from the guest.
+   Test firewall policy reapplication after reboot and refuse launch if policy
+   files drift. Do not change the ruleset during sessions.
+5. Install reviewed versions of Codex/Claude in the wizard, verify agent-native
+   isolation and supported authentication. Test nesting separately if necessary.
+   Test end-to-end with a disposable project and scoped credentials; revoke them.
+6. On a spare Pi or backed-up SD card, copy only `pi-hardening.sh`. Test preview,
+   offline missing-package behavior and individually approve controls. For SSH,
+   validate key login before and after, including rollback on ineffective config.
+   Verify TCP/UDP allow rules, IPv4/IPv6 policy, actual APT origins and journal caps.
+   Test watchdog and Bluetooth only where hardware is available. Verify after reboot.
+7. Revert snapshots/restore SD backups. Do not use the new profiles on important
+   systems until the relevant controls have been tested on the intended platform.

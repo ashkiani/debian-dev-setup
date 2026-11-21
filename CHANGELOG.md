@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented in this file.
 
+## 2.1.0
+
+- Added standalone interactive `ai-sandbox-setup.sh` with offline and restricted
+  online sessions, optional AI-agent installation, resource limits and active verification.
+- Added standalone interactive `pi-hardening.sh` with optional general server mode,
+  logging, updates, SSH checks, firewall and Raspberry Pi-specific controls.
+- Both follow-ups support offline copying, dry-run operation and independent
+  verification without a repository checkout. Existing setup scripts are unchanged.
+
 ## 2.0.1
 
 ### Added
